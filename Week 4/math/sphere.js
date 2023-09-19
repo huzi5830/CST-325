@@ -97,7 +97,7 @@ Sphere.prototype = {
     
     
     }
-    console.log("Center: " + this.center + "  Radius: " + this.radius);
+    
 
     // todo - determine whether the ray intersects has a VALID intersection with this
 	//        sphere and if so, where. A valid intersection is on the is in front of
