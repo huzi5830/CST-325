@@ -14,15 +14,19 @@
  * }
  */
 
-var Sphere = function(center, radius) {
+var Sphere = function(center, radius, color) {
   // Sanity checks (your modification should be below this where indicated)
   if (!(this instanceof Sphere)) {
     console.error("Sphere constructor must be called with the new operator");
   }
-
   this.center = center;
   this.radius = radius;
-
+	if (color == undefined){
+		this.color = new Vector3(1.0,1.0,1.0);
+	  }
+	else{
+		this.color = color
+	}
   // todo - make sure this.center and this.radius are replaced with default values if and only if they
   // are invalid or undefined (i.e. center should be of type Vector3 & radius should be a Number)
   // - the default center should be the zero vector
@@ -38,7 +42,7 @@ var Sphere = function(center, radius) {
     console.error("The radius must be a Number");
   }
   // Sanity checks (your modification should be above this)
-  
+
 };
 
 Sphere.prototype = {
