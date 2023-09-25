@@ -70,12 +70,7 @@ var eyeCoordinate = new Vector3(0, 0, eyeDistance); // all of your rays will use
 
 var sphere; // todo = new Sphere(..., ...);
 sphere = new Sphere(new Vector3(0,0,0), 0.25);
-var floor = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0));
-var leftWall = new Plane(new Vector3(1, 0, 0), new Vector3(-1, 0, 0) , new Vector3(1.0,0.0,0.0));
-var rightWall = new Plane(new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(0.0,1.0,0.0));
-var ceiling = new Plane(new Vector3(0, -1, 0), new Vector3(0, 1, 0));
-var backWall = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, -1));
-var scene = [sphere, ceiling, floor, leftWall, rightWall, backWall];
+var plane = new Plane(undefined, new Vector3(0, -0.25, 0));
 
 //generateRayForPixel();
 //updateAndRender();
@@ -100,11 +95,11 @@ function generateRayForPixel(xPixelIndex, yPixelIndex) {
 }
 
 // -----------------------------------------------------------------------------
-function setPixelColor(xPixelIndex, yPixelIndex, color /*[0,1]*/) {
+function setPixelColor(xPixelIndex, yPixelIndex,shadeofGrey /*[0,1]*/) {
 	var index = (yPixelIndex * pixelsAcross + xPixelIndex) * 4; // 4 bytes per pixel
-	imageData.data[index + 0] = color.x * 255; // red channel
-	imageData.data[index + 1] = color.y* 255; // green channel
-	imageData.data[index + 2] = color.z* 255; // blue channel
+	imageData.data[index + 0] = shadeofGrey *255; // red channel
+	imageData.data[index + 1] = shadeofGrey *255; // green channel
+	imageData.data[index + 2] = shadeofGrey * 255; // blue channel
 	imageData.data[index + 3] = 255;
 }
 
@@ -129,66 +124,10 @@ function updateAndRender(timeElapsed) {
 			
 			// See if the ray intersects the sphere or the plane (or every object in our scene)
 			// Uncomment when your sphere or plane code is ready
-			var closestObject = null; 
-			var closestResult = null;
+		sphereResult = sphere.raycast(pixelRay)
+		planeResult = plane.raycast(pixelRay)
 
-			for (let i = 0; i < scene.length; i++) {
-			  var object = scene[i];
-			  var result = object.raycast(pixelRay);
-			  if (result.hit == true && (closestResult === null || result.distance < closestResult.distance)) {
-				closestResult = result;
-				closestObject = object;
-			  }
-			}
-
-			if (closestObject !== null) {
-			var objectIntersection = closestResult.point.clone();
-         	var objectNormal = closestResult.normal.clone();
-        	var lightVector = lightSource.clone().subtract(objectIntersection);
-        	lightVector = lightVector.normalize();
-        	var normalDot = objectNormal.dot(lightVector);
-
-			objectIntersection.multiplyScalar(0.99);
-			rayToLight = new Ray(objectIntersection,lightVector);
-			shadowRay = sphere.raycast(rayToLight)
-			var resultColor = closestObject.color.clone(); 
-			resultColor.x *= normalDot;
-			resultColor.y *= normalDot;
-			resultColor.z *= normalDot;
-
-			if (shadowRay.hit == false ){
-				setPixelColor(xPixelIndex, yPixelIndex,resultColor);
-			}
-			else if (shadowRay.hit == true ) {
-				lightDistance = lightSource.clone().subtract(objectIntersection);
-				lightDistance = lightDistance.length()
-					if (lightDistance < shadowRay.distance){
-						setPixelColor(xPixelIndex, yPixelIndex,resultColor);
-					}
-					else{
-						resultColor.x =0.1
-						resultColor.y =0.1
-						resultColor.z = 0.1
-						setPixelColor(xPixelIndex, yPixelIndex,resultColor);
-					}
-			}
-			}
-		}
-	}
-
-	
-
-	// Take our array of color data and give to the canvas to display
-	canvasContext.putImageData(imageData, 0, 0);
-
-	// Let the browser know it should call this function again when it's time to render
-	requestAnimationFrame(updateAndRender);
-}
-
-// We are ready to render, let the browser know
-requestAnimationFrame(updateAndRender);
-
-		/*if (planeResult.hit == true && sphereResult.hit == true) {
+		if (planeResult.hit == true && sphereResult.hit == true) {
 				let closest = sphereResult.distance > planeResult.distance ? true: false;
 				 switch(closest){
 					case(true):
@@ -260,7 +199,23 @@ requestAnimationFrame(updateAndRender);
 			else {
 				// we didn't hit anything, choose an appropriate backbround color
 				 setPixelColor(xPixelIndex, yPixelIndex, 0.2); // dark gray
-			}*/
+			}
+		}
+	}
+
+
+	
+
+	// Take our array of color data and give to the canvas to display
+	canvasContext.putImageData(imageData, 0, 0);
+
+	// Let the browser know it should call this function again when it's time to render
+	requestAnimationFrame(updateAndRender);
+}
+
+// We are ready to render, let the browser know
+requestAnimationFrame(updateAndRender);
+
 </script>
 </body>
 </html>
