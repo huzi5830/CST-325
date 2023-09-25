@@ -127,83 +127,76 @@ function updateAndRender(timeElapsed) {
 		sphereResult = sphere.raycast(pixelRay)
 		planeResult = plane.raycast(pixelRay)
 
+		let light = new Vector3(1,0,0);
+
+
 		if (planeResult.hit == true && sphereResult.hit == true) {
-				let closest = sphereResult.distance > planeResult.distance ? true: false;
-				 switch(closest){
-					case(true):
-					let planeIntersection = planeResult.point.clone();
-					let planeNormal = planeResult.normal.clone();
-					let lightVectorP = lightSource.clone().subtract(planeIntersection);
-					lightVectorP = lightVectorP.normalize();
-					normalDot = planeNormal.dot(lightVectorP);
-					setPixelColor(xPixelIndex, yPixelIndex, normalDot);// middle gray
-					break;
+			let sphereIntersection = sphereResult.point.clone();
+			let planeIntersection = planeResult.point.clone();
+			let sphereNormal = sphereIntersection.clone().normalize();
+			let planeNormal = planeIntersection.clone().normalize()
+			let closest = sphereResult.distance > planeResult.distance ? true: false;
 
-					case(false):
-					let sphereIntersection = sphereResult.point.clone();
-					let sphereNormal = sphereResult.normal.clone();
-					let lightVectorS = lightSource.clone().subtract(sphereIntersection);
-					lightVectorS = lightVectorS.normalize();
-					normalDot = sphereNormal.dot(lightVectorS);
-					setPixelColor(xPixelIndex, yPixelIndex,normalDot);
-					break;
-				 }
-				
-			}
-			
-		  else if (sphereResult.hit == true) {
+			 switch(closest){
+				case(true):
+				setPixelColor(xPixelIndex, yPixelIndex, 0.5); 
+				break;
+
+				case(false):
 				let sphereIntersection = sphereResult.point.clone();
-				let sphereNormal = sphereResult.normal.clone();
-				let lightVector = lightSource.clone().subtract(sphereIntersection);
-				lightVector = lightVector.normalize();
-				normalDot = sphereNormal.dot(lightVector);
+				let sphereNormal = sphereIntersection.clone().normalize();
+				let SlightDirection = sphereIntersection.fromTo(sphereIntersection,light);
 
-				let rayToLight = new Ray(sphereIntersection,lightVector);
-				let secondCast = sphere.raycast(rayToLight)
-
+				let normalDot = SlightDirection.dot(sphereNormal);
+				//setPixelColor(xPixelIndex, yPixelIndex,0.8);
 				if (normalDot > 0 && normalDot <=1){
 					setPixelColor(xPixelIndex, yPixelIndex,normalDot);
 				}
 				else{
-					setPixelColor(xPixelIndex, yPixelIndex,0.05);
-				}
+					setPixelColor(xPixelIndex, yPixelIndex,0.8);
+				} 
+			 }
+
+		} 
+		else if (sphereResult.hit == true) {
+			let sphereIntersection = sphereResult.point.clone();
+			let sphereNormal = sphereIntersection.clone().normalize();
+			let SlightDirection = sphereIntersection.fromTo(sphereIntersection,light);
+			//SlightDirection = SlightDirection.normalize();
+			let normalDot = SlightDirection.dot(sphereNormal);
+			/*let test = sphereNormal.length()
+			let test2 = lightDirection.length();
+			let angle = Math.acos(normalDot / (sphereNormal.length() * lightDirection.length()));
+			let normalDotTheta = sphereNormal.length() * SlightDirection.length() * Math.cos(angle);*/
+
+			//setPixelColor(xPixelIndex, yPixelIndex,0.8);
+			if (normalDot > 0 && normalDot <=1){
+				setPixelColor(xPixelIndex, yPixelIndex,normalDot);
+			}
+			else{
+				setPixelColor(xPixelIndex, yPixelIndex,0.8);
 			} 
-			else if(planeResult.hit == true){
-				let planeIntersection = planeResult.point.clone();
-				let planeNormal = planeResult.normal.clone();
-				let lightVector = lightSource.clone().subtract(planeIntersection);
-				lightVector = lightVector.normalize();
-				normalDot = planeNormal.dot(lightVector);
+		}
+		else if(planeResult.hit == true){
+			let planeIntersection = planeResult.point.clone();
+			let planeNormal = planeIntersection.clone().normalize();
+			let PlightDirection = planeIntersection.fromTo(planeIntersection,light);
+			PlightDirection = PlightDirection.normalize()
+			let normalDot = PlightDirection.dot(planeNormal);
 
-				planeIntersection.multiplyScalar(0.99);
-				rayToLight = new Ray(planeIntersection,lightVector);
-				secondCast = sphere.raycast(rayToLight)
+			let angle = Math.acos(normalDot / (planeNormal.length() * PlightDirection.length()));
+			let normalDotTheta = planeNormal.length() * PlightDirection.length() * Math.cos(angle);
 
-				if (secondCast.hit == false ){
-					setPixelColor(xPixelIndex, yPixelIndex,normalDot);
-				}
-				else if (secondCast.hit == true ) {
-					lightDistance = lightSource.clone().subtract(planeIntersection);
-					lightDistance = lightDistance.length()
-						if (lightDistance < secondCast.distance){
-							setPixelColor(xPixelIndex, yPixelIndex,normalDot);
-						}
-						else{
-							setPixelColor(xPixelIndex, yPixelIndex,0.05);
-						}
-				}
-				else{
-					setPixelColor(xPixelIndex, yPixelIndex,0.05);
-				}
-			}
-			else {
-				// we didn't hit anything, choose an appropriate backbround color
-				 setPixelColor(xPixelIndex, yPixelIndex, 0.2); // dark gray
-			}
+			//let angle = Math.acos(normalDot / (planeNormal.length() * lightDirection.length()));
+
+			setPixelColor(xPixelIndex, yPixelIndex, 0.5);// middle gray
+		}
+		else {
+			// we didn't hit anything, choose an appropriate backbround color
+			 setPixelColor(xPixelIndex, yPixelIndex, 0.1); // dark gray
 		}
 	}
-
-
+}
 	
 
 	// Take our array of color data and give to the canvas to display
