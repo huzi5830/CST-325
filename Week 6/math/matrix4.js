@@ -306,6 +306,8 @@ Matrix4.prototype = {
     //        and scale should NOT be modified.
 
     var trsMatrix = new Matrix4();
+    trsMatrix.multiply(translation).multiply(rotation).multiply(scale);
+    //trsMatrix.multiply(scale).multiply(rotation).multiply(translation);
     return trsMatrix;
   },
 
