@@ -25,6 +25,11 @@ function OrbitCamera (input) {
 
 	// -----------------------------------------------------------------------------
 	this.getPosition = function() {
+		var x =this.cameraWorldMatrix.getElement(0, 3); 
+		var y = this.cameraWorldMatrix.getElement(1, 3); 
+		var z = this.cameraWorldMatrix.getElement(2, 3); 
+		var pos = new Vector4(x, y, z, 1); 
+		return pos;
 		// todo #9 - return a vector4 of the camera's world position contained in its matrix
 	}
 

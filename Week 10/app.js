@@ -161,6 +161,18 @@ function updateAndRender() {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     // todo #6
     // uncomment when directed by guide
+  
+    for (var i = 0; i < sphereGeometryList.length; ++i) {
+        var sphere = sphereGeometryList[i];
+        var spherePosition = sphere.getPosition();
+        console.log(spherePosition);
+        var cameraPosition = camera.getPosition();
+        var distanceVector = spherePosition.fromTo(cameraPosition, spherePosition);
+        var distance = distanceVector.length(); 
+        sphere.distance = distance;
+    }
+
+    sphereGeometryList.sort((a, b) => b.distance - a.distance);
     for (var i = 0; i < sphereGeometryList.length; ++i) {
          sphereGeometryList[i].render(camera, projectionMatrix, textureShaderProgram);
      }

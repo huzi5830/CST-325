@@ -8,6 +8,11 @@ function WebGLGeometryJSON (gl) {
 
 	// -----------------------------------------------------------------------------
 	this.getPosition = function() {
+		var x =this.worldMatrix.getElement(0, 3); 
+		var y = this.worldMatrix.getElement(1, 3); 
+		var z = this.worldMatrix.getElement(2, 3); 
+		var pos = new Vector4(x, y, z, 1); 
+		return pos;
 		// todo #9 - return a vector4 of this object's world position contained in its matrix
 	}
 
