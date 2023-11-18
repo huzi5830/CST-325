@@ -11,7 +11,7 @@ void main(void) {
     // todo #5
      vec2 uv = vec2(vTexcoords.x, vTexcoords.y);
     vec4 textureColor = texture2D(uTexture, uv);
-    gl_FragColor = vec4(textureColor.rgb, uAlpha);
+    gl_FragColor = vec4(textureColor.rgb, textureColor.a * uAlpha);
     // todo #3
     // gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
    // gl_FragColor = vec4(vTexcoords.x, vTexcoords.y, 0.0, uAlpha);

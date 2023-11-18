@@ -307,7 +307,7 @@ Matrix4.prototype = {
 
     var trsMatrix = new Matrix4();
     trsMatrix.multiply(translation).multiply(rotation).multiply(scale);
-    //trsMatrix.multiply(scale).multiply(rotation).multiply(translation);
+    
     return trsMatrix;
   },
 

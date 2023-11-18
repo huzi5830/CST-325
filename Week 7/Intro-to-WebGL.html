@@ -238,14 +238,14 @@
 
 			// specify the horizontal lines
 			for (var i = -10; i <= 10; ++i) {
-				// add position for line start point (x value should be i)
-				// add position for line end point (x value should be i)
+				horizontalLines.push(i, -1, -10); 
+				horizontalLines.push(i, -1, 10); 
 			}
 
 			// specify the lateral lines
 			for (var i = -10; i <= 10; ++i) {
-				// add position for line start point (z value should be i)
-				// add position for line end point (z value should be i)
+				horizontalLines.push(-10, -1, i); 
+				horizontalLines.push(10, -1, i); 
 			}
 
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(linePositions), gl.STATIC_DRAW);
@@ -297,8 +297,6 @@
 			triangleGeometry.worldMatrix.multiply(new Matrix4().makeRotationY(degrees));
 		
 		
-		
-		
 			viewMatrix = new Matrix4();
 			aspectRatio = gl.canvasWidth / gl.canvasHeight;
 			projectionMatrix.makePerspective(45,aspectRatio,0.1,1000);
@@ -338,6 +336,8 @@
 
 		// -------------------------------------------------------------------------
 		function renderLines() {
+			seconds++
+			var degrees = seconds * 1;
 			// todo #12
 
 			// todo update the triangle geometry world matrix here (used to place the triangle into world space)
@@ -345,17 +345,42 @@
 			// todo set the projection matrix using values from online guide
 
 			// todo bind and map(gl.vertexAttribPointer) the buffers
-
+			triangleGeometry.worldMatrix = new Matrix4(); 
+			triangleGeometry.worldMatrix.makeTranslation(new Vector3(0, 0, -7));
+			triangleGeometry.worldMatrix.multiply(new Matrix4().makeRotationY(degrees));
+			lineGridGeometry.worldMatrix = new Matrix4(); 
+			viewMatrix = new Matrix4();
+			aspectRatio = gl.canvasWidth / gl.canvasHeight;
+			projectionMatrix.makePerspective(45,aspectRatio,0.1,1000);
 			// todo - send matrices to shader
+			gl.bindBuffer(gl.ARRAY_BUFFER, lineGridGeometry.positionBuffer);
+			gl.vertexAttribPointer(
+				lineGridGeometry.shaderProgram.vertexPositionAttribute,
+				2 * 21 * 2,
+				gl.FLOAT,
+				gl.FALSE,
+				0, // stride - used for mixing data in a single buffer, ignore
+				0  // offset - used for mixing data in a single buffer, ignore
+			);
+			gl.bindBuffer(gl.ARRAY_BUFFER, lineGridGeometry.colorBuffer);
+			gl.vertexAttribPointer(
+				lineGridGeometry.shaderProgram.vertexColorAttribute,
+				2 * 21 * 2,
+				gl.FLOAT,
+				gl.FALSE,
+				0, // stride - used for mixing data in a single buffer, ignore
+				0  // offset - used for mixing data in a single buffer, ignore
+			);
+
 
 			// --------------------------------------------
 			// below is done for you, uncomment when ready
 
 			// todo - you will need to calculate the time elapsed since the start of the program
 			//        and set up the uniform (like other uniforms) or the value below will never change
-			// gl.uniform1f(shaderProgram.timeUniform, time.secondsElapsedSinceStart);
+			 gl.uniform1f(shaderProgram.timeUniform,seconds);
 
-			// gl.drawArrays(gl.LINES, 0, lineGridGeometry.bufferItemCount);
+			 gl.drawArrays(gl.LINES, 0, lineGridGeometry.bufferItemCount);
 		}
 
 	</script>

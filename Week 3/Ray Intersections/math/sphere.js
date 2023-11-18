@@ -73,11 +73,8 @@ Sphere.prototype = {
     }
     else{
       discriminant = Math.sqrt(discriminant);
-      let test = ((-coefficientB) + discriminant);
-      let etst2 = (2*coefficientA);
       let value1 = ((-coefficientB + discriminant) / (2*coefficientA))
       let value2= ((-coefficientB - discriminant) / (2*coefficientA))
-
       let alpha = (value1 > value2 ? value2 : value1);
       if (alpha < 0 ){
         //negative intersection
@@ -85,11 +82,20 @@ Sphere.prototype = {
         return result;
       }
       result.hit = Boolean(true);
-      result.point = r1.origin.add(r1.direction.multiplyScalar(alpha));
-      let point = result.point.clone()
+      Offset = r1.clone().direction.multiplyScalar(alpha);
+      result.point = r1.origin.clone().add(Offset);
+      let point = result.point.clone();
       let PMinusC = point.subtract(this.center)
       result.normal = PMinusC.normalize();
-      result.distance = alpha
+      result.distance = alpha;
+
+       /* result.point = r1.origin.add(r1.direction.multiplyScalar(alpha));
+        let point = result.point.clone()
+        let PMinusC = point.subtract(this.center)
+        result.normal = PMinusC.normalize();
+        result.distance = alpha*/
+    
+    
     }
     console.log("Center: " + this.center + "  Radius: " + this.radius);
 
